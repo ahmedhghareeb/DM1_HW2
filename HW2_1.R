@@ -73,6 +73,9 @@ boxplot.loop(train)
 
 #ggplot(data = train, aes(x = factor(0), y= crim)) + geom_boxplot() + coord_flip()
 
+###################################### Problem 1.2 ################################################
+
+
 ##### Model with no variable manipulation #####
 
 linreg.model <- lm(medv ~ ., data = train)
@@ -141,6 +144,79 @@ mean(abs(pi - test$medv))
 ##### variable selection #####
 
 
+# Best Subset Regression, won't use much in practice, computationally expensive
+
+# "leaps" package has best subset regression
+
+model.best.subset <- regsubsets(medv ~ ., data = train, nbest = 2, nvmax = 14)
+#nbest will keep top n sets of variables for each # of variables up to nvmax
+
+summary(model.best.subset)
+plot(model.best.subset, scale = "bic")
+
+# set null and full model for use in variable selection
+nullmodel = lm(medv ~ 1, data = train)
+fullmodel = lm(medv ~ ., data = train)
+
+#bw
+model.backward = step(fullmodel, direction = "backward")
+#fw
+model.forward = step(nullmodel, scope = list(lower = nullmodel, upper = fullmodel), 
+                  direction = "forward")
+#step
+model.stepwise = step(nullmodel, scope = list(lower = nullmodel, upper = fullmodel), 
+                  direction = "both")
 
 
-###################################### Problem 1.2 ################################################
+
+# Cross Validation
+
+# alternative approach to training/testing split. For k-fold cross validation
+#, the dataset is divided into k parts. Each part serves as the test set in each 
+#iteration and the rest serve as training set. The out-of-sample performance measures
+# from the k iterations are averaged.
+
+#use the entire dataset for cross validation
+
+# need to use glm instead of lm to fit the model (if we want to use cv.glm fucntion in boot package)
+
+#The default measure of performance is the Mean Squared Error (MSE)
+# need to define a cost function to define another performance measure
+
+#5-fold Cross Validation
+
+model_2 <- glm(medv ~ indus + rm, data = Boston)
+
+cv.glm(data = Boston, glmfit = model_2, K = 5)$delta[2]
+
+
+# LOOCV (Leave-one-out Cross Validation)
+
+cv.glm(data = Boston, glmfit = model_2, K = nrow(Boston))$delta[2]
+
+#5-fold Cross Validation Using MAE
+
+# define a MAE cost function
+# 2 input vectors, pi = predicted values, r = actual values.
+
+model_2 = glm(medv ~ indus + rm, data = Boston)
+
+MAE_cost = function(pi, r) {
+  return(mean(abs(pi - r)))
+}
+
+cv.glm(data = Boston, glmfit = model_2, cost = MAE_cost, K = 5)$delta[2]
+
+#Diagnostic Plots
+
+#diagnostic plots are not as important when regression is used in predictive (supervised) data mining 
+# as when it is used in economics for inference. 
+
+# Roughly speaking, the table summarizes what you should look for in the following plots:
+
+#Plot Name	Good
+# Residual vs. Fitted 	No pattern, scattered around 0 line
+# Normal Q-Q	          Dots fall on dashed line
+# Residual vs. Leverage	No observation with large Cook's distance
+
+plot(linreg.model)
