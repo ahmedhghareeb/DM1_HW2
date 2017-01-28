@@ -2,37 +2,66 @@
 
 set.seed(1984)
 
+# sample size
 n=c(25, 100, 200, 500, 5000)
 
-sigmasq= c(0.1, 0.5, 1)
+# noise
+sigma= c(0.1, 0.5, 1)
 
-n <- 200
+# initialize matrices 
+MSE.matrix <- matrix(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), nrow = 5)
+colnames(MSE.matrix) <- c("sig = .1","sig = .5","sig = 1")
+rownames(MSE.matrix) <- c("n = 25", "n = 100", "n = 200", "n = 500", "n = 5000")
 
-sigmasq <- 1
+rsq.matrix <- matrix(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), nrow = 5)
+colnames(rsq.matrix) <- c("sig = .1","sig = .5","sig = 1")
+rownames(rsq.matrix) <- c("n = 25", "n = 100", "n = 200", "n = 500", "n = 5000")
 
-x1 <- rnorm(n=n, mean = 2, sd = 0.4)
+adj.rsq.matrix <- matrix(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), nrow = 5)
+colnames(adj.rsq.matrix) <- c("sig = .1","sig = .5","sig = 1")
+rownames(adj.rsq.matrix) <- c("n = 25", "n = 100", "n = 200", "n = 500", "n = 5000")
 
-x2 <- rnorm(n=n, mean = -1, sd = 0.1)
+for (i in 1:length(n)){
+  
+  for (j in 1:length(sigma)){
+    
+    # generate predictors
+    x1 <- rnorm(n=n, mean = 2, sd = 0.4)
+    x2 <- rnorm(n=n, mean = -1, sd = 0.1)
+    x3 <- x1 * x2
+    
+    # generate error
+    e <- rnorm(n=n, mean = 0, sd = sigma)
+    
+    eyx <- 5 + 1.2*x1 + 3*x2 + e
+  
+    # create data from for model
+    model.df <- as.data.frame(cbind(eyx,x1,x2,x3))
+    
+    # set null and full model for stepwise regression
+    nullmodel <- lm(eyx ~ 1, data = model.df)
+    fullmodel <- lm(eyx ~ ., data = model.df)
+    
+    # stepwise regression
+    print(paste("**************** n = ", n[i]," sig = ",sigma[j], " **********************", sep = ""))
+    
+    model.stepwise = step(nullmodel, scope = list(lower = nullmodel, upper = fullmodel), 
+                          direction = "both")
+    summary.model <- summary(model.stepwise)
 
-x3 <- x1 * x2
+  
+    MSE.matrix[i,j] <- round(summary.model$sigma^2, 4)
+    rsq.matrix[i,j] <- round(summary.model$r.squared, 4)
+    adj.rsq.matrix[i,j] <- round(summary.model$adj.r.squared, 4)
 
-e <- rnorm(n=n, mean = 0, sd = sigmasq)
+  }
+}
 
-eyx <- 5 + 1.2*x1 + 3*x2 + e
+# print matrices
+print(MSE.matrix)
+print(rsq.matrix)
+print(adj.rsq.matrix)
 
-model.df <- as.data.frame(cbind(eyx,x1,x2,x3))
-
-# set null and full model for stepwise regression
-nullmodel <- lm(eyx ~ 1, data = model.df)
-fullmodel <- lm(eyx ~ ., data = model.df)
-
-# stepwise regression
-model.stepwise = step(nullmodel, scope = list(lower = nullmodel, upper = fullmodel), 
-                      direction = "both")
-
+# add line plots of progressing n and noise
 
 
-lm.out = #fit linear regression
-  betaMatrix[j,]= lm.out$coefficients
-mysummary = summary(lm.out)
-listMSE[j] = mysummary$sigma^2 #get MSE per iteration
