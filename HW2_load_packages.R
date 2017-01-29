@@ -6,7 +6,7 @@
 ##### install packages #####
 
 
-packages <- c("MASS","ggplot2","GGally","rpart","caret","leaps","boot")
+packages <- c("MASS","ggplot2","GGally","rpart","caret","leaps","boot","reshape2","stringr")
 
 install.packages(packages)
 
