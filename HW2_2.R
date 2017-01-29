@@ -41,9 +41,11 @@ for (i in 1:length(n)){
     nullmodel <- lm(eyx ~ 1, data = model.df)
     fullmodel <- lm(eyx ~ ., data = model.df)
     
-    # stepwise regression
+   # create a "banner" to separate model outputs
+    
     print(paste("**************** n = ", n[i]," sig = ",sigma[j], " **********************", sep = ""))
     
+    # stepwise regression
     model.stepwise = step(nullmodel, scope = list(lower = nullmodel, upper = fullmodel), 
                           direction = "both")
     summary.model <- summary(model.stepwise)
