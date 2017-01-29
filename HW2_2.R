@@ -1,7 +1,5 @@
 # Simulation of Linear Regression varying n and noise (e)
 
-#set.seed(1984)
-
 # sample size
 n=c(25, 100, 200, 500, 5000)
 
@@ -63,6 +61,11 @@ print(MSE.matrix)
 print(rsq.matrix)
 print(adj.rsq.matrix)
 
-# add line plots of progressing n and noise
+# user defined function line.plot from plot_func.R - creates line graphs with ggplot2
+
+line.plot(adj.rsq.matrix,"MSE")
+line.plot(adj.rsq.matrix,"R-Squared")
+line.plot(adj.rsq.matrix,"Adjusted R-Squared")
+
 
 
