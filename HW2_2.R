@@ -1,6 +1,6 @@
 # Simulation of Linear Regression varying n and noise (e)
 
-set.seed(1984)
+#set.seed(1984)
 
 # sample size
 n=c(25, 100, 200, 500, 5000)
@@ -23,15 +23,16 @@ rownames(adj.rsq.matrix) <- c("n = 25", "n = 100", "n = 200", "n = 500", "n = 50
 
 for (i in 1:length(n)){
   
+  
   for (j in 1:length(sigma)){
-    
+    set.seed(1984)
     # generate predictors
-    x1 <- rnorm(n=n, mean = 2, sd = 0.4)
-    x2 <- rnorm(n=n, mean = -1, sd = 0.1)
+    x1 <- rnorm(n=n[i], mean = 2, sd = 0.4)
+    x2 <- rnorm(n=n[i], mean = -1, sd = 0.1)
     x3 <- x1 * x2
     
     # generate error
-    e <- rnorm(n=n, mean = 0, sd = sigma)
+    e <- rnorm(n=n[i], mean = 0, sd = sigma[j])
     
     eyx <- 5 + 1.2*x1 + 3*x2 + e
   
