@@ -21,15 +21,20 @@ rownames(adj.rsq.matrix) <- c("n = 25", "n = 100", "n = 200", "n = 500", "n = 50
 
 for (i in 1:length(n)){
   
-  
   for (j in 1:length(sigma)){
-    set.seed(1984)
+    
     # generate predictors
+    set.seed(1984)
     x1 <- rnorm(n=n[i], mean = 2, sd = 0.4)
+    
+    set.seed(1985)
     x2 <- rnorm(n=n[i], mean = -1, sd = 0.1)
+    
     x3 <- x1 * x2
     
+    
     # generate error
+    set.seed(1986)
     e <- rnorm(n=n[i], mean = 0, sd = sigma[j])
     
     eyx <- 5 + 1.2*x1 + 3*x2 + e
