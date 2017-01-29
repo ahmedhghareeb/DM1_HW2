@@ -19,6 +19,10 @@ adj.rsq.matrix <- matrix(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), nrow = 5)
 colnames(adj.rsq.matrix) <- c("sig = .1","sig = .5","sig = 1")
 rownames(adj.rsq.matrix) <- c("n = 25", "n = 100", "n = 200", "n = 500", "n = 5000")
 
+#list for equations
+
+equations <- list()
+
 for (i in 1:length(n)){
   
   for (j in 1:length(sigma)){
@@ -55,7 +59,8 @@ for (i in 1:length(n)){
                           direction = "both")
     summary.model <- summary(model.stepwise)
 
-  
+    equations[[length(equations)+1]] <- list(paste("n = ", n[i]," sig = ",sigma[j], " equation = ",summary.model$call[2], sep = ""))
+    
     MSE.matrix[i,j] <- round(summary.model$sigma^2, 4)
     rsq.matrix[i,j] <- round(summary.model$r.squared, 4)
     adj.rsq.matrix[i,j] <- round(summary.model$adj.r.squared, 4)
