@@ -70,8 +70,8 @@ print(adj.rsq.matrix)
 
 # user defined function line.plot from plot_func.R - creates line graphs with ggplot2
 
-line.plot(adj.rsq.matrix,"MSE")
-line.plot(adj.rsq.matrix,"R-Squared")
+line.plot(MSE.matrix,"MSE")
+line.plot(rsq.matrix,"R-Squared")
 line.plot(adj.rsq.matrix,"Adjusted R-Squared")
 
 
